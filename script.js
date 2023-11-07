@@ -68,6 +68,21 @@ function clearItems() {
 	resetUI();
 }
 
+function filterItems(e) {
+	const items = itemsList.querySelectorAll('li');
+	const filterText = e.target.value.toLowerCase();
+
+	items.forEach((item) => {
+		const itemName = item.firstChild.textContent.toLowerCase();
+
+		if (itemName.includes(filterText)) {
+			item.style.display = '';
+		} else {
+			item.style.display = 'none';
+		}
+	});
+}
+
 // Remove Filter and Clear All button when list is empty
 function resetUI() {
 	const items = itemsList.querySelectorAll('li');
@@ -85,5 +100,6 @@ function resetUI() {
 itemForm.addEventListener('submit', addItem);
 itemsList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems);
+itemFilter.addEventListener('input', filterItems);
 
 resetUI();
