@@ -5,30 +5,52 @@ const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
 
 // Add list items
-function addItem(e) {
+function onAdItemSubmit(e) {
 	e.preventDefault();
 
 	const newItem = itemInput.value;
 	// Validate input
-	if (newItem.trim() !== '') {
-		// Create list item
-		const li = document.createElement('li');
-		li.appendChild(document.createTextNode(newItem));
-
-		const button = createButton('remove-item btn-link text-red');
-
-		li.appendChild(button);
-
-		// Add li to DOM
-		itemsList.appendChild(li);
-
-		resetUI();
-
-		itemInput.value = '';
-	} else {
+	if (newItem.trim() == '') {
 		alert('Please add an item');
 		return;
 	}
+
+	// Create item DOM element
+	addItemToDOM(newItem);
+
+	// Add item to local storage
+	addItemToStorage(newItem);
+
+	resetUI();
+	itemInput.value = '';
+}
+
+function addItemToDOM(item) {
+	const li = document.createElement('li');
+	li.appendChild(document.createTextNode(item));
+
+	const button = createButton('remove-item btn-link text-red');
+
+	li.appendChild(button);
+
+	// Add li to DOM
+	itemsList.appendChild(li);
+}
+
+function addItemToStorage(item) {
+	let itemsFromStorage;
+
+	if (localStorage.getItem('items') === null) {
+		itemsFromStorage = [];
+	} else {
+		itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+	}
+
+	// Add new item to to array.
+	itemsFromStorage.push(item);
+
+	// Convert to JSON string and set to local storage
+	localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
 // Create button that contains 'x' icon
@@ -97,7 +119,7 @@ function resetUI() {
 }
 
 // Event listener
-itemForm.addEventListener('submit', addItem);
+itemForm.addEventListener('submit', onAdItemSubmit);
 itemsList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems);
 itemFilter.addEventListener('input', filterItems);
